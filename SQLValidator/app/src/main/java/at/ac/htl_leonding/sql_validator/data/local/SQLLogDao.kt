@@ -13,6 +13,6 @@ interface SQLLogDao {
     @Query("SELECT * FROM sql_logs ORDER BY timeStamp DESC")
     fun getAllLogs(): Flow<List<SQLLogEntry>>
 
-    @Query("SELECT * FROM sql_logs WHERE `query` = :userQuery")
+    @Query("SELECT * FROM sql_logs WHERE LOWER(`query`) = LOWER(:userQuery)")
     suspend fun getQueryByQuery(userQuery: String): List<SQLLogEntry>
 }

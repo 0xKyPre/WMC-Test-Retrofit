@@ -15,6 +15,13 @@ class AppRepository(
 
     suspend fun executePostRequest(query:String): String {
         return try {
+            val queriesFromDatabase = logDao.getQueryByQuery(query);
+            var loadFromString = "DB"
+
+            if (queriesFromDatabase.isEmpty()) {
+                loadFromString = "WEB"
+            }
+
             val response = apiService.executePostQuery(query)
             var responseString = response.string()
             var amountOfError = 0;
@@ -34,7 +41,7 @@ class AppRepository(
 
             logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = 0))
 
-            "Query POST Success: $responseString"
+            "Query POST Success: $responseString and load from $loadFromString"
         } catch (e: Exception) {
             "Error: ${e.localizedMessage}"
         }
