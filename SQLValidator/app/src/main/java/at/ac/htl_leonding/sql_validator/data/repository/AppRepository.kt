@@ -4,6 +4,8 @@ import at.ac.htl_leonding.sql_validator.data.local.SQLLogDao
 import at.ac.htl_leonding.sql_validator.data.local.SQLLogEntry
 import at.ac.htl_leonding.sql_validator.data.remote.ApiService
 import kotlinx.coroutines.flow.Flow
+import org.json.JSONArray
+import org.json.JSONException
 
 class AppRepository(
     private val apiService: ApiService,
@@ -14,11 +16,25 @@ class AppRepository(
     suspend fun executePostRequest(query:String): String {
         return try {
             val response = apiService.executePostQuery(query)
-            val responseString = response.string()
+            var responseString = response.string()
+            var amountOfError = 0;
+
+            try {
+                val size = JSONArray(responseString).length();
+                responseString = "Amount of Error: $size";
+                amountOfError = size;
+
+                if(amountOfError == 0) {
+                    responseString = "No Errors in SQL Query"
+                }
+            } catch (e: JSONException) {
+                responseString = "JSON ERROR";
+            }
+
 
             logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = 0))
 
-            "POST Success: $responseString"
+            "Query POST Success: $responseString"
         } catch (e: Exception) {
             "Error: ${e.localizedMessage}"
         }

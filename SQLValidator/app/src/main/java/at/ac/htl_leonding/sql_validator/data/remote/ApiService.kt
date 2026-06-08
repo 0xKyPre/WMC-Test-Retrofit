@@ -6,7 +6,7 @@ import retrofit2.http.POST
 
 interface ApiService {
 
-    @POST("post")
+    @POST("/sql-syntax-tester")
     suspend fun executePostQuery(
         @Body query: String
     ): ResponseBody

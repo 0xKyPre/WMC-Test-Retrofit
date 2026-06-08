@@ -4,44 +4,42 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.Surface
+import at.ac.htl_leonding.sql_validator.data.local.AppDatabase
+import at.ac.htl_leonding.sql_validator.data.remote.ApiService
+import at.ac.htl_leonding.sql_validator.data.repository.AppRepository
+import at.ac.htl_leonding.sql_validator.ui.screens.MainScreen
 import at.ac.htl_leonding.sql_validator.ui.theme.SQLValidatorTheme
+import at.ac.htl_leonding.sql_validator.ui.viewmodel.MainViewModel
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val dataBase = AppDatabase.getDatabase(this)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://softwium.com/sql-validator/")
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        val repository = AppRepository(apiService, dataBase.logDao())
+
+        val viewModel = MainViewModel(repository)
+
         setContent {
             SQLValidatorTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface {
+                    MainScreen(viewModel)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SQLValidatorTheme {
-        Greeting("Android")
     }
 }
