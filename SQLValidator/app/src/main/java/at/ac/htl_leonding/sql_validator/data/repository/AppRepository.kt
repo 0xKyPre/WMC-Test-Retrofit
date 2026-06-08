@@ -39,7 +39,7 @@ class AppRepository(
             }
 
 
-            logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = 0))
+            logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = amountOfError))
 
             "Query POST Success: $responseString and load from $loadFromString"
         } catch (e: Exception) {

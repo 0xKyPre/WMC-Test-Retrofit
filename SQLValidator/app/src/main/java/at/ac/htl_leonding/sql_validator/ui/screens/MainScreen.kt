@@ -43,7 +43,7 @@ fun MainScreen(viewModel: MainViewModel) {
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(text = "Aktuelle Server-Antwort:", style = MaterialTheme.typography.titleSmall)
+        Text(text = "Server Response:", style = MaterialTheme.typography.titleSmall)
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant
@@ -68,7 +68,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Lokale Log-Historie (Room DB):", style = MaterialTheme.typography.titleMedium)
+        Text(text = "Local Log-History (Room DB):", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
