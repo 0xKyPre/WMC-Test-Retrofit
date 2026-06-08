@@ -18,10 +18,6 @@ class AppRepository(
             val queriesFromDatabase = logDao.getQueryByQuery(query);
             var loadFromString = "DB"
 
-            if (queriesFromDatabase.isEmpty()) {
-                loadFromString = "WEB"
-            }
-
             val response = apiService.executePostQuery(query)
             var responseString = response.string()
             var amountOfError = 0;
@@ -38,8 +34,11 @@ class AppRepository(
                 responseString = "JSON ERROR";
             }
 
+            if (queriesFromDatabase.isEmpty()) {
+                loadFromString = "WEB"
 
-            logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = amountOfError))
+                logDao.insertLog(SQLLogEntry(query = query, amountOfErrors = amountOfError))
+            }
 
             "Query POST Success: $responseString and load from $loadFromString"
         } catch (e: Exception) {
